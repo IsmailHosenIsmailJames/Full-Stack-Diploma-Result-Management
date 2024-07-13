@@ -1,39 +1,47 @@
 import os
-import json
+from fastapi import FastAPI
+from pydantic import BaseModel
 
-def getResult(examType:str ,regulation: str, heldOn:str, semester:str, isIndividual:str )-> dict:
-    dataFolder = "data"
-    filesData = os.listdir("data")
-    if(isIndividual == 'y'):
-        roll = input("Your roll : ")
-        try:
-            for files in filesData:
-                if(files.find(f"{examType}_{regulation}_{heldOn}_{semester}")) != -1:
-                    with open(f"{dataFolder}/{examType}_{regulation}_{heldOn}_{semester}_individual.json", 'r') as f :
-                        requiredDataIndividual = json.load(f)
-                        return requiredDataIndividual[roll]
-                    break
-        except:
-            None
+from get_result import getResult
 
-    else:
-        enei = input("ENEI number : ")
-        try:
-            for files in filesData:
-                if(files.find(f"{examType}_{regulation}_{heldOn}_{semester}")) != -1:
-                    with open(f"{dataFolder}/{examType}_{regulation}_{heldOn}_{semester}_institute.json", 'r') as f :
-                        requiredDataInstitute = json.load(f)
-                        return requiredDataInstitute[enei]
-                    break
-        except:
-            return None
+app = FastAPI()
 
-print("We need more information about these data. Note : These information is important.\nYou can collect thse info from PDF!")
-examType = (input("Exam Type : "))
-regulation = input("Regulation : ")
-heldOn = input("Held On : ")
-semester = input("Semester : ")
-isIndividual = input("is individual result : [y/n] : ")
+class Individual(BaseModel):
+    examType:str
+    regulation: int
+    heldOn:str
+    semester:int
+    roll: int
 
+class Inistitution(BaseModel):
+    examType:str
+    regulation: int
+    heldOn:str
+    semester:int
+    eiin: int
 
-print(getResult(semester=semester, examType= examType, heldOn=heldOn, isIndividual= isIndividual, regulation=regulation))
+@app.get("/files-list")
+async def getExitsData():
+    return {"files-list": os.listdir("data")}
+
+@app.get("/individual/")
+async def get_individual_data(individual: Individual):
+    return getResult(
+        examType=individual.examType, 
+        regulation= individual.regulation,
+        heldOn= individual.heldOn,
+        semester= individual.semester,
+        roll= individual.roll,
+        isIndividual= True,
+    )
+
+@app.get("/inistitution/")
+async def get_inistitution_data(inistitution: Inistitution):
+    return getResult(
+        examType=inistitution.examType, 
+        regulation= inistitution.regulation,
+        heldOn= inistitution.heldOn,
+        semester= inistitution.semester,
+        isIndividual= False,
+        eiin=inistitution.eiin
+    )
