@@ -123,7 +123,7 @@ def extractInstituteResult(fileName:str) -> tuple:
 
 # function for select a PDF file
 def getFileName(extension:str) -> str:
-    print("\nLooking for PDF files...")
+    print(f"\nLooking for {extension} files...")
     
     listOfAllFiles =  os.listdir()
     pdfNameFiles = []
@@ -131,7 +131,7 @@ def getFileName(extension:str) -> str:
         if(fileName.endswith(f".{extension.lower()}") or fileName.endswith(f".{extension.upper()}")):
             pdfNameFiles.append(fileName)
             
-    print(f'We found {len(pdfNameFiles)} pdf files.')
+    print(f'We found {len(pdfNameFiles)} {extension} files.')
     print("---------------------------\n")
     print("Index\t- File Name")
     
@@ -152,13 +152,22 @@ def getFileName(extension:str) -> str:
 # Call and get selected file name
 fileName = getFileName("txt")
 
-indivisul = extractIndividualResult(fileName)
+individsul = extractIndividualResult(fileName)
 institute = extractInstituteResult(fileName)
 
-with open(f"{fileName}_indiviual.json", "w") as file:
-    json.dump(institute, file, sort_keys=True, indent= 2)
+print("We need more information about these data. Note : These information is important.\nYou can collect thse info from PDF!")
+examType = (input("Exam Type : "))
+regulation = input("Regulation : ")
+heldOn = input("Held On : ")
+semester = input("Semester : ")
 
 
-with open(f"{fileName}_institute.json", "w") as file:
+with open(f"{examType}_{regulation}_{heldOn}_{semester}_individual.json", "w") as file:
+    json.dump(individsul, file, sort_keys=True, indent= 2)
+    print(f"Extracted data saved as {fileName}_individual.json")
+
+
+with open(f"{examType}_{regulation}_{heldOn}_{semester}_institute.json", "w") as file:
     json.dump(institute, file, sort_keys=True, indent= 2)
+    print(f"Extracted data saved as {fileName}_institute.json")
         
