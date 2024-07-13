@@ -17,100 +17,101 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
+    Widget leftWidget = Container(
+      decoration: BoxDecoration(
+        color: Colors.blue.shade900,
+        borderRadius: BorderRadiusDirectional.only(
+          bottomEnd: Radius.circular(MediaQuery.of(context).size.width * .350),
+        ),
+      ),
+      padding: const EdgeInsets.all(50),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text.rich(
+            TextSpan(
+              children: <TextSpan>[
+                TextSpan(
+                  text: "Welcome ...\n",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 50,
+                  ),
+                ),
+                TextSpan(
+                  text:
+                      "A open source fullstack Diploma Result Management project. Here we tried to add best features as we can.",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const Gap(50),
+          const Text(
+            "Follow me",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+            ),
+          ),
+          const Divider(
+            color: Colors.white,
+          ),
+          const Gap(10),
+          Row(
+            children: [
+              IconButton(
+                style: IconButton.styleFrom(backgroundColor: Colors.white),
+                onPressed: () async {
+                  await launchUrl(
+                    Uri.parse(
+                      "https://github.com/IsmailHosenIsmailJames",
+                    ),
+                  );
+                },
+                icon: const Icon(SimpleIcons.github),
+              ),
+              const Gap(20),
+              IconButton(
+                style: IconButton.styleFrom(backgroundColor: Colors.white),
+                onPressed: () async {
+                  await launchUrl(
+                    Uri.parse(
+                      "https://www.facebook.com/mdismailhosen.james/",
+                    ),
+                  );
+                },
+                icon: const Icon(SimpleIcons.facebook),
+              ),
+              const Gap(20),
+              IconButton(
+                style: IconButton.styleFrom(backgroundColor: Colors.white),
+                onPressed: () async {
+                  await launchUrl(
+                    Uri.parse(
+                      "https://www.linkedin.com/in/ismail-hosen-james-3756a4211/",
+                    ),
+                  );
+                },
+                icon: const Icon(SimpleIcons.linkedin),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+
     return Scaffold(
       body: Row(
         children: [
           if (MediaQuery.of(context).size.width > breakPoint)
             Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.blue.shade900,
-                    borderRadius: const BorderRadiusDirectional.only(
-                        bottomEnd: Radius.circular(350))),
-                padding: const EdgeInsets.all(50),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text.rich(
-                      TextSpan(
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: "Welcome ...\n",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 50,
-                            ),
-                          ),
-                          TextSpan(
-                            text:
-                                "A open source fullstack Diploma Result Management project. Here we tried to add best features as we can.",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const Gap(50),
-                    const Text(
-                      "Follow me",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                      ),
-                    ),
-                    const Divider(
-                      color: Colors.white,
-                    ),
-                    const Gap(10),
-                    Row(
-                      children: [
-                        IconButton(
-                          style: IconButton.styleFrom(
-                              backgroundColor: Colors.white),
-                          onPressed: () async {
-                            await launchUrl(
-                              Uri.parse(
-                                "https://github.com/IsmailHosenIsmailJames",
-                              ),
-                            );
-                          },
-                          icon: const Icon(SimpleIcons.github),
-                        ),
-                        const Gap(20),
-                        IconButton(
-                          style: IconButton.styleFrom(
-                              backgroundColor: Colors.white),
-                          onPressed: () async {
-                            await launchUrl(
-                              Uri.parse(
-                                "https://www.facebook.com/mdismailhosen.james/",
-                              ),
-                            );
-                          },
-                          icon: const Icon(SimpleIcons.facebook),
-                        ),
-                        const Gap(20),
-                        IconButton(
-                          style: IconButton.styleFrom(
-                              backgroundColor: Colors.white),
-                          onPressed: () async {
-                            await launchUrl(
-                              Uri.parse(
-                                "https://www.linkedin.com/in/ismail-hosen-james-3756a4211/",
-                              ),
-                            );
-                          },
-                          icon: const Icon(SimpleIcons.linkedin),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+              child: leftWidget,
             ),
           Expanded(
             child: Form(
@@ -225,6 +226,8 @@ class _HomeState extends State<Home> {
                       ),
                     ),
                   ),
+                  const Gap(50),
+                  if (MediaQuery.of(context).size.width < breakPoint) leftWidget
                 ],
               ),
             ),
