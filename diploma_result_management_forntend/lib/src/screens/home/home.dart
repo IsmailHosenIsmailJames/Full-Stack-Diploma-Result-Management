@@ -20,8 +20,9 @@ class _HomeState extends State<Home> {
     Widget leftWidget = Container(
       decoration: BoxDecoration(
         color: Colors.blue.shade900,
-        borderRadius: BorderRadiusDirectional.only(
-          bottomEnd: Radius.circular(MediaQuery.of(context).size.width * .350),
+        borderRadius: BorderRadius.only(
+          bottomRight:
+              Radius.circular(MediaQuery.of(context).size.width * .350),
         ),
       ),
       padding: const EdgeInsets.all(50),
@@ -116,114 +117,123 @@ class _HomeState extends State<Home> {
           Expanded(
             child: Form(
               child: ListView(
-                padding: const EdgeInsets.all(20),
                 children: [
-                  Text(
-                    "Fill the form",
-                    style: TextStyle(
-                      color: Colors.blue.shade900,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 50,
-                    ),
-                  ),
-                  const Gap(20),
-                  Row(
-                    children: [
-                      getStepWidget("1"),
-                      const Gap(15),
-                      Expanded(
-                        child: TextFormField(
-                          decoration: getInputDecoration(
-                            hint: "What is your Regulation?",
-                            label: "Regulation",
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      children: [
+                        Text(
+                          "Fill the form",
+                          style: TextStyle(
+                            color: Colors.blue.shade900,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 50,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const Gap(15),
-                  Row(
-                    children: [
-                      getStepWidget("2"),
-                      const Gap(15),
-                      Expanded(
-                        child: TextFormField(
-                          decoration: getInputDecoration(
-                            hint: "What is your Regulation?",
-                            label: "Regulation",
+                        const Gap(20),
+                        Row(
+                          children: [
+                            getStepWidget("1"),
+                            const Gap(15),
+                            Expanded(
+                              child: TextFormField(
+                                decoration: getInputDecoration(
+                                  hint: "What is your Regulation?",
+                                  label: "Regulation",
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const Gap(15),
+                        Row(
+                          children: [
+                            getStepWidget("2"),
+                            const Gap(15),
+                            Expanded(
+                              child: TextFormField(
+                                decoration: getInputDecoration(
+                                  hint: "What is your Regulation?",
+                                  label: "Regulation",
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const Gap(15),
+                        Row(
+                          children: [
+                            getStepWidget("3"),
+                            const Gap(15),
+                            Expanded(
+                              child: TextFormField(
+                                decoration: getInputDecoration(
+                                  hint: "What is your Regulation?",
+                                  label: "Regulation",
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const Gap(15),
+                        Row(
+                          children: [
+                            getStepWidget("4"),
+                            const Gap(15),
+                            Expanded(
+                              child: TextFormField(
+                                decoration: getInputDecoration(
+                                  hint: "What is your Regulation?",
+                                  label: "Regulation",
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const Gap(15),
+                        Row(
+                          children: [
+                            getStepWidget("5"),
+                            const Gap(15),
+                            Expanded(
+                              child: TextFormField(
+                                decoration: getInputDecoration(
+                                  hint: "What is your Regulation?",
+                                  label: "Regulation",
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const Gap(50),
+                        SizedBox(
+                          height: 60,
+                          width: MediaQuery.of(context).size.width > breakPoint
+                              ? MediaQuery.of(context).size.width * 0.4
+                              : MediaQuery.of(context).size.width * 0.8,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue.shade900,
+                              shadowColor: Colors.white,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(100),
+                                  bottomRight: Radius.circular(100),
+                                ),
+                              ),
+                            ),
+                            onPressed: () {},
+                            child: const Text(
+                              "Get your result",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 25,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const Gap(15),
-                  Row(
-                    children: [
-                      getStepWidget("3"),
-                      const Gap(15),
-                      Expanded(
-                        child: TextFormField(
-                          decoration: getInputDecoration(
-                            hint: "What is your Regulation?",
-                            label: "Regulation",
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Gap(15),
-                  Row(
-                    children: [
-                      getStepWidget("4"),
-                      const Gap(15),
-                      Expanded(
-                        child: TextFormField(
-                          decoration: getInputDecoration(
-                            hint: "What is your Regulation?",
-                            label: "Regulation",
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Gap(15),
-                  Row(
-                    children: [
-                      getStepWidget("5"),
-                      const Gap(15),
-                      Expanded(
-                        child: TextFormField(
-                          decoration: getInputDecoration(
-                            hint: "What is your Regulation?",
-                            label: "Regulation",
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Gap(50),
-                  SizedBox(
-                    height: 60,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue.shade900,
-                        shadowColor: Colors.white,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(100),
-                            bottomRight: Radius.circular(100),
-                          ),
-                        ),
-                      ),
-                      onPressed: () {},
-                      child: const Text(
-                        "Get your result",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 25,
-                        ),
-                      ),
+                      ],
                     ),
                   ),
                   const Gap(50),
