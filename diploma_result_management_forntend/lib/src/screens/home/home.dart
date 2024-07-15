@@ -1,6 +1,12 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 
 import 'package:diploma_result_management_forntend/src/api/apis.dart';
+import 'package:diploma_result_management_forntend/src/models/individual_result_query.dart';
+import 'package:diploma_result_management_forntend/src/models/institute_result_query.dart';
+import 'package:diploma_result_management_forntend/src/screens/individual_result_show_ui.dart/individual_result_ui.dart';
+import 'package:diploma_result_management_forntend/src/screens/inititute_result_ui/intitute_result_ui.dart';
 import 'package:diploma_result_management_forntend/src/theme/input_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -49,6 +55,9 @@ class _HomeState extends State<Home> {
   List<String> listOfheldOn = [];
   List<String> listOfsemester = [];
 
+  TextEditingController rollOrEIINController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+
   void filterFiles() {
     listOfexamType = [];
     listOfregulation = [];
@@ -89,6 +98,7 @@ class _HomeState extends State<Home> {
   }
 
   bool isInstitution = false;
+  bool isResultLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -181,165 +191,268 @@ class _HomeState extends State<Home> {
         ],
       ),
     );
-    Widget formWidget = Column(
-      children: [
-        Text(
-          "Fill the form",
-          style: TextStyle(
-            color: Colors.blue.shade900,
-            fontWeight: FontWeight.w700,
-            fontSize: 50,
+    Widget formWidget = Form(
+      key: formKey,
+      child: Column(
+        children: [
+          Text(
+            "Fill the form",
+            style: TextStyle(
+              color: Colors.blue.shade900,
+              fontWeight: FontWeight.w700,
+              fontSize: 50,
+            ),
           ),
-        ),
-        const Gap(20),
-        Row(
-          children: [
-            getStepWidget("1"),
-            const Gap(15),
-            Expanded(
-              child: DropdownButtonFormField(
-                decoration: getInputDecoration(
-                    label: "Exam Type", hint: "Select your exam type..."),
-                items: listOfexamType
-                    .map(
-                      (e) => DropdownMenuItem(
-                        value: e,
-                        child: Text(e),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (value) {
-                  setState(() {
-                    examType = value!;
-                  });
-                  filterFiles();
-                },
-              ),
-            ),
-          ],
-        ),
-        const Gap(15),
-        Row(
-          children: [
-            getStepWidget("2"),
-            const Gap(15),
-            Expanded(
-              child: DropdownButtonFormField(
-                decoration: getInputDecoration(
-                    hint: "Select your Regulation...", label: "Regulation"),
-                items: listOfregulation
-                    .map(
-                      (e) => DropdownMenuItem(
-                        value: e,
-                        child: Text(e),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (value) {
-                  setState(() {
-                    regulation = value!;
-                  });
-                  filterFiles();
-                },
-              ),
-            ),
-          ],
-        ),
-        const Gap(15),
-        Row(
-          children: [
-            getStepWidget("3"),
-            const Gap(15),
-            Expanded(
-              child: DropdownButtonFormField(
-                decoration: getInputDecoration(
-                    hint: "Select your Semester...", label: "Semester"),
-                items: listOfsemester
-                    .map(
-                      (e) => DropdownMenuItem(
-                        value: e,
-                        child: Text(e),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (value) {
-                  setState(() {
-                    semester = value!;
-                  });
-                  filterFiles();
-                },
-              ),
-            ),
-          ],
-        ),
-        const Gap(15),
-        Row(
-          children: [
-            getStepWidget("4"),
-            const Gap(15),
-            Expanded(
-              child: DropdownButtonFormField(
-                decoration: getInputDecoration(
-                    hint: "When your exam Held in?", label: "Held in"),
-                items: listOfheldOn
-                    .map(
-                      (e) => DropdownMenuItem(
-                        value: e,
-                        child: Text(e),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (value) {
-                  setState(() {
-                    heldOn = value!;
-                  });
-                  filterFiles();
-                },
-              ),
-            ),
-          ],
-        ),
-        const Gap(15),
-        Row(
-          children: [
-            getStepWidget("5"),
-            const Gap(15),
-            Expanded(
-              child: TextFormField(
-                decoration: getInputDecoration(
-                  hint:
-                      isInstitution ? "type institue EIIN?" : "type your roll?",
-                  label: isInstitution ? "EIIN" : "Roll",
+          const Gap(20),
+          Row(
+            children: [
+              getStepWidget("1"),
+              const Gap(15),
+              Expanded(
+                child: DropdownButtonFormField(
+                  decoration: getInputDecoration(
+                      label: "Exam Type", hint: "Select your exam type..."),
+                  items: listOfexamType
+                      .map(
+                        (e) => DropdownMenuItem(
+                          value: e,
+                          child: Text(e),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      examType = value!;
+                    });
+                    filterFiles();
+                  },
                 ),
               ),
-            ),
-          ],
-        ),
-        const Gap(50),
-        SizedBox(
-          height: 60,
-          width: MediaQuery.of(context).size.width > breakPoint
-              ? MediaQuery.of(context).size.width * 0.4
-              : MediaQuery.of(context).size.width * 0.8,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue.shade900,
-              shadowColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
-            ),
-            onPressed: () {},
-            child: const Text(
-              "Get your result",
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w700,
-                fontSize: 25,
+            ],
+          ),
+          const Gap(15),
+          Row(
+            children: [
+              getStepWidget("2"),
+              const Gap(15),
+              Expanded(
+                child: DropdownButtonFormField(
+                  decoration: getInputDecoration(
+                      hint: "Select your Regulation...", label: "Regulation"),
+                  items: listOfregulation
+                      .map(
+                        (e) => DropdownMenuItem(
+                          value: e,
+                          child: Text(e),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      regulation = value!;
+                    });
+                    filterFiles();
+                  },
+                ),
               ),
+            ],
+          ),
+          const Gap(15),
+          Row(
+            children: [
+              getStepWidget("3"),
+              const Gap(15),
+              Expanded(
+                child: DropdownButtonFormField(
+                  decoration: getInputDecoration(
+                      hint: "Select your Semester...", label: "Semester"),
+                  items: listOfsemester
+                      .map(
+                        (e) => DropdownMenuItem(
+                          value: e,
+                          child: Text(e),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      semester = value!;
+                    });
+                    filterFiles();
+                  },
+                ),
+              ),
+            ],
+          ),
+          const Gap(15),
+          Row(
+            children: [
+              getStepWidget("4"),
+              const Gap(15),
+              Expanded(
+                child: DropdownButtonFormField(
+                  decoration: getInputDecoration(
+                      hint: "When your exam Held in?", label: "Held in"),
+                  items: listOfheldOn
+                      .map(
+                        (e) => DropdownMenuItem(
+                          value: e,
+                          child: Text(e),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      heldOn = value!;
+                    });
+                    filterFiles();
+                  },
+                ),
+              ),
+            ],
+          ),
+          const Gap(15),
+          Row(
+            children: [
+              getStepWidget("5"),
+              const Gap(15),
+              Expanded(
+                child: TextFormField(
+                  controller: rollOrEIINController,
+                  validator: (value) {
+                    try {
+                      int.parse("$value");
+                      return null;
+                    } catch (e) {
+                      return "This is not valid";
+                    }
+                  },
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  decoration: getInputDecoration(
+                    hint: isInstitution
+                        ? "type institue EIIN?"
+                        : "type your roll?",
+                    label: isInstitution ? "EIIN" : "Roll",
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const Gap(50),
+          SizedBox(
+            height: 60,
+            width: MediaQuery.of(context).size.width > breakPoint
+                ? MediaQuery.of(context).size.width * 0.4
+                : MediaQuery.of(context).size.width * 0.8,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue.shade900,
+                shadowColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+              ),
+              onPressed: () async {
+                if (formKey.currentState!.validate()) {
+                  setState(() {
+                    isResultLoading = true;
+                  });
+                  if (isInstitution == true) {
+                    print(InstituteResultQuery(
+                      examType: examType,
+                      regulation: int.parse(regulation),
+                      heldOn: heldOn,
+                      semester: int.parse(semester),
+                      eiin: int.parse(rollOrEIINController.text),
+                    ).toJson());
+                    final response = await http.post(
+                      Uri.parse(institutionAPIURL),
+                      headers: {"content-type": "application/json"},
+                      body: InstituteResultQuery(
+                        examType: examType,
+                        regulation: int.parse(regulation),
+                        heldOn: heldOn,
+                        semester: int.parse(semester),
+                        eiin: int.parse(rollOrEIINController.text),
+                      ).toJson(),
+                    );
+                    if (response.statusCode == 200 && response.body != "null") {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => IntituteResultUi(
+                            result: jsonDecode(response.body),
+                          ),
+                        ),
+                      );
+                    } else {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (context) => const Center(
+                          child: Text(
+                            "Something went worng",
+                            style: TextStyle(
+                              color: Colors.red,
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                  } else {
+                    final response = await http.post(
+                      Uri.parse(individualAPIURL),
+                      headers: {"content-type": "application/json"},
+                      body: IndividualResultQuery(
+                        examType: examType,
+                        regulation: int.parse(regulation),
+                        heldOn: heldOn,
+                        semester: int.parse(semester),
+                        roll: int.parse(rollOrEIINController.text),
+                      ).toJson(),
+                    );
+                    if (response.statusCode == 200 && response.body != "null") {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => IndividualResultUi(
+                            result: jsonDecode(response.body),
+                          ),
+                        ),
+                      );
+                    } else {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (context) => const Center(
+                          child: Text(
+                            "Something went worng",
+                            style: TextStyle(
+                              color: Colors.red,
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                  }
+                  setState(() {
+                    isResultLoading = false;
+                  });
+                }
+              },
+              child: isResultLoading
+                  ? const CircularProgressIndicator(
+                      color: Colors.white,
+                    )
+                  : const Text(
+                      "Get your result",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 25,
+                      ),
+                    ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
 
     return Scaffold(
