@@ -1,11 +1,15 @@
-import 'package:diploma_result_management_forntend/theme/input_decoration.dart';
+import 'dart:convert';
+
+import 'package:diploma_result_management_forntend/src/api/apis.dart';
+import 'package:diploma_result_management_forntend/src/theme/input_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:http/http.dart' as http;
 import 'package:simple_icons/simple_icons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../theme/break_point.dart';
-import '../../../widgets/step_number.dart';
+import '../../theme/break_point.dart';
+import '../../widgets/step_number.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -15,6 +19,77 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  List<String> listOfFiles = [];
+  bool isListOfFilesLoading = true;
+
+  @override
+  void initState() {
+    getFilesInfo();
+    super.initState();
+  }
+
+  void getFilesInfo() async {
+    http.Response response = await http.get(Uri.parse(filesListAPIURL));
+    if (response.statusCode == 200) {
+      Map decodedData = jsonDecode(response.body);
+      listOfFiles = List<String>.from(decodedData['files-list']);
+      filterFiles();
+      setState(() {
+        isListOfFilesLoading = false;
+      });
+    }
+  }
+
+  String examType = "";
+  String regulation = "";
+  String heldOn = "";
+  String semester = "";
+  List<String> listOfexamType = [];
+  List<String> listOfregulation = [];
+  List<String> listOfheldOn = [];
+  List<String> listOfsemester = [];
+
+  void filterFiles() {
+    listOfexamType = [];
+    listOfregulation = [];
+    listOfheldOn = [];
+    listOfsemester = [];
+    for (String e in listOfFiles) {
+      if (e.contains(examType) &&
+          e.contains(regulation) &&
+          e.contains(heldOn) &&
+          e.contains(semester)) {
+        List<String> splitedInfo = e.split("_");
+        if (!listOfexamType.contains(splitedInfo[0]) ||
+            listOfexamType.isEmpty) {
+          listOfexamType.add(splitedInfo[0]);
+        }
+
+        if (!listOfregulation.contains(splitedInfo[1]) ||
+            listOfregulation.isEmpty) {
+          listOfregulation.add(splitedInfo[1]);
+        }
+
+        if (!listOfheldOn.contains(splitedInfo[2]) || listOfheldOn.isEmpty) {
+          listOfheldOn.add(splitedInfo[2]);
+        }
+
+        if (!listOfsemester.contains(splitedInfo[3]) ||
+            listOfsemester.isEmpty) {
+          listOfsemester.add(splitedInfo[3]);
+        }
+      }
+    }
+    listOfexamType.sort();
+    listOfregulation.sort();
+    listOfregulation = listOfregulation.reversed.toList();
+    listOfheldOn.sort();
+    listOfsemester.sort();
+    setState(() {});
+  }
+
+  bool isInstitution = false;
+
   @override
   Widget build(BuildContext context) {
     Widget leftWidget = Container(
@@ -106,6 +181,166 @@ class _HomeState extends State<Home> {
         ],
       ),
     );
+    Widget formWidget = Column(
+      children: [
+        Text(
+          "Fill the form",
+          style: TextStyle(
+            color: Colors.blue.shade900,
+            fontWeight: FontWeight.w700,
+            fontSize: 50,
+          ),
+        ),
+        const Gap(20),
+        Row(
+          children: [
+            getStepWidget("1"),
+            const Gap(15),
+            Expanded(
+              child: DropdownButtonFormField(
+                decoration: getInputDecoration(
+                    label: "Exam Type", hint: "Select your exam type..."),
+                items: listOfexamType
+                    .map(
+                      (e) => DropdownMenuItem(
+                        value: e,
+                        child: Text(e),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) {
+                  setState(() {
+                    examType = value!;
+                  });
+                  filterFiles();
+                },
+              ),
+            ),
+          ],
+        ),
+        const Gap(15),
+        Row(
+          children: [
+            getStepWidget("2"),
+            const Gap(15),
+            Expanded(
+              child: DropdownButtonFormField(
+                decoration: getInputDecoration(
+                    hint: "Select your Regulation...", label: "Regulation"),
+                items: listOfregulation
+                    .map(
+                      (e) => DropdownMenuItem(
+                        value: e,
+                        child: Text(e),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) {
+                  setState(() {
+                    regulation = value!;
+                  });
+                  filterFiles();
+                },
+              ),
+            ),
+          ],
+        ),
+        const Gap(15),
+        Row(
+          children: [
+            getStepWidget("3"),
+            const Gap(15),
+            Expanded(
+              child: DropdownButtonFormField(
+                decoration: getInputDecoration(
+                    hint: "Select your Semester...", label: "Semester"),
+                items: listOfsemester
+                    .map(
+                      (e) => DropdownMenuItem(
+                        value: e,
+                        child: Text(e),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) {
+                  setState(() {
+                    semester = value!;
+                  });
+                  filterFiles();
+                },
+              ),
+            ),
+          ],
+        ),
+        const Gap(15),
+        Row(
+          children: [
+            getStepWidget("4"),
+            const Gap(15),
+            Expanded(
+              child: DropdownButtonFormField(
+                decoration: getInputDecoration(
+                    hint: "When your exam Held in?", label: "Held in"),
+                items: listOfheldOn
+                    .map(
+                      (e) => DropdownMenuItem(
+                        value: e,
+                        child: Text(e),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) {
+                  setState(() {
+                    heldOn = value!;
+                  });
+                  filterFiles();
+                },
+              ),
+            ),
+          ],
+        ),
+        const Gap(15),
+        Row(
+          children: [
+            getStepWidget("5"),
+            const Gap(15),
+            Expanded(
+              child: TextFormField(
+                decoration: getInputDecoration(
+                  hint:
+                      isInstitution ? "type institue EIIN?" : "type your roll?",
+                  label: isInstitution ? "EIIN" : "Roll",
+                ),
+              ),
+            ),
+          ],
+        ),
+        const Gap(50),
+        SizedBox(
+          height: 60,
+          width: MediaQuery.of(context).size.width > breakPoint
+              ? MediaQuery.of(context).size.width * 0.4
+              : MediaQuery.of(context).size.width * 0.8,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue.shade900,
+              shadowColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+            ),
+            onPressed: () {},
+            child: const Text(
+              "Get your result",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+                fontSize: 25,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
 
     return Scaffold(
       body: Row(
@@ -115,131 +350,80 @@ class _HomeState extends State<Home> {
               child: leftWidget,
             ),
           Expanded(
-            child: Form(
-              child: ListView(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      children: [
-                        Text(
-                          "Fill the form",
-                          style: TextStyle(
-                            color: Colors.blue.shade900,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 50,
-                          ),
-                        ),
-                        const Gap(20),
-                        Row(
-                          children: [
-                            getStepWidget("1"),
-                            const Gap(15),
-                            Expanded(
-                              child: TextFormField(
-                                decoration: getInputDecoration(
-                                  hint: "What is your Regulation?",
-                                  label: "Regulation",
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const Gap(15),
-                        Row(
-                          children: [
-                            getStepWidget("2"),
-                            const Gap(15),
-                            Expanded(
-                              child: TextFormField(
-                                decoration: getInputDecoration(
-                                  hint: "What is your Regulation?",
-                                  label: "Regulation",
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const Gap(15),
-                        Row(
-                          children: [
-                            getStepWidget("3"),
-                            const Gap(15),
-                            Expanded(
-                              child: TextFormField(
-                                decoration: getInputDecoration(
-                                  hint: "What is your Regulation?",
-                                  label: "Regulation",
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const Gap(15),
-                        Row(
-                          children: [
-                            getStepWidget("4"),
-                            const Gap(15),
-                            Expanded(
-                              child: TextFormField(
-                                decoration: getInputDecoration(
-                                  hint: "What is your Regulation?",
-                                  label: "Regulation",
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const Gap(15),
-                        Row(
-                          children: [
-                            getStepWidget("5"),
-                            const Gap(15),
-                            Expanded(
-                              child: TextFormField(
-                                decoration: getInputDecoration(
-                                  hint: "What is your Regulation?",
-                                  label: "Regulation",
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const Gap(50),
-                        SizedBox(
-                          height: 60,
-                          width: MediaQuery.of(context).size.width > breakPoint
-                              ? MediaQuery.of(context).size.width * 0.4
-                              : MediaQuery.of(context).size.width * 0.8,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue.shade900,
-                              shadowColor: Colors.white,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(100),
-                                  bottomRight: Radius.circular(100),
-                                ),
-                              ),
-                            ),
-                            onPressed: () {},
-                            child: const Text(
-                              "Get your result",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w700,
-                                fontSize: 25,
-                              ),
+            child: ListView(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Column(
+                        children: [
+                          Text(
+                            "Institution Result",
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: isInstitution
+                                  ? Colors.grey
+                                  : Colors.blue.shade900,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
-                        ),
-                      ],
-                    ),
+                          if (!isInstitution)
+                            SizedBox(
+                              width: 200,
+                              child: Divider(
+                                height: 2,
+                                color: Colors.blue.shade900,
+                              ),
+                            )
+                        ],
+                      ),
+                      const Gap(15),
+                      Switch.adaptive(
+                        value: isInstitution,
+                        onChanged: (value) {
+                          setState(() {
+                            isInstitution = !isInstitution;
+                          });
+                        },
+                      ),
+                      const Gap(10),
+                      Column(
+                        children: [
+                          Text(
+                            "Institution Result",
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: isInstitution
+                                  ? Colors.blue.shade900
+                                  : Colors.grey,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          if (isInstitution)
+                            SizedBox(
+                              width: 200,
+                              child: Divider(
+                                height: 2,
+                                color: Colors.blue.shade900,
+                              ),
+                            )
+                        ],
+                      ),
+                    ],
                   ),
-                  const Gap(50),
-                  if (MediaQuery.of(context).size.width < breakPoint) leftWidget
-                ],
-              ),
+                ),
+                Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: isListOfFilesLoading
+                        ? const Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : formWidget),
+                const Gap(50),
+                if (MediaQuery.of(context).size.width < breakPoint) leftWidget
+              ],
             ),
           ),
         ],
