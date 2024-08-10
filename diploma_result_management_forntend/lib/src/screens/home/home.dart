@@ -107,7 +107,7 @@ class _HomeState extends State<Home> {
         color: Colors.blue.shade900,
         borderRadius: BorderRadius.only(
           bottomRight:
-              Radius.circular(MediaQuery.of(context).size.width * .350),
+              Radius.circular(MediaQuery.of(context).size.width * .250),
         ),
       ),
       padding: const EdgeInsets.all(50),
@@ -195,13 +195,31 @@ class _HomeState extends State<Home> {
       key: formKey,
       child: Column(
         children: [
-          Text(
-            "Fill the form",
-            style: TextStyle(
-              color: Colors.blue.shade900,
-              fontWeight: FontWeight.w700,
-              fontSize: 50,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Fill the form",
+                style: TextStyle(
+                  color: Colors.blue.shade900,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 50,
+                ),
+              ),
+              TextButton.icon(
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const Home(),
+                    ),
+                    (route) => true,
+                  );
+                },
+                icon: const Icon(Icons.restore),
+                label: const Text("Reset"),
+              ),
+            ],
           ),
           const Gap(20),
           Row(
