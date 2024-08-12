@@ -137,6 +137,141 @@ class _HomeState extends State<Home> {
               ],
             ),
           ),
+          const Gap(15),
+          Row(
+            children: [
+              CircleAvatar(
+                backgroundColor: Colors.white,
+                radius: 15,
+                child: Icon(
+                  SimpleIcons.github,
+                  color: Colors.grey.shade800,
+                ),
+              ),
+              const Gap(10),
+              const Text(
+                "Github link for Frontend",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+          const Gap(10),
+          Container(
+            padding: const EdgeInsets.all(5),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(40),
+                topRight: Radius.circular(40),
+              ),
+            ),
+            child: TextButton(
+              onPressed: () {
+                launchUrl(
+                  Uri.parse(
+                    "https://github.com/IsmailHosenIsmailJames/Full-Stack-Diploma-Result-Management",
+                  ),
+                );
+              },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.link),
+                  const Gap(10),
+                  Text(
+                    "https://github.com/IsmailHosenIsmailJames/Full-Stack-Diploma-Result-Management",
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.blue.shade800,
+                    ),
+                  ),
+                  const Gap(10),
+                ],
+              ),
+            ),
+          ),
+          const Gap(15),
+          Row(
+            children: [
+              CircleAvatar(
+                backgroundColor: Colors.white,
+                radius: 15,
+                child: Icon(
+                  SimpleIcons.github,
+                  color: Colors.grey.shade800,
+                ),
+              ),
+              const Gap(10),
+              const Text(
+                "Github link for Backend",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+          const Gap(10),
+          Container(
+            padding: const EdgeInsets.all(5),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(40),
+                topRight: Radius.circular(40),
+              ),
+            ),
+            child: TextButton(
+              onPressed: () {
+                launchUrl(
+                  Uri.parse(
+                    "https://github.com/IsmailHosenIsmailJames/backend_python_fast_api",
+                  ),
+                );
+              },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.link),
+                  const Gap(10),
+                  Text(
+                    "https://github.com/IsmailHosenIsmailJames/backend_python_fast_api",
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.blue.shade800,
+                    ),
+                  ),
+                  const Gap(10),
+                ],
+              ),
+            ),
+          ),
+          const Gap(10),
+          const Row(
+            children: [
+              Icon(
+                Icons.star_rounded,
+                color: Colors.orange,
+              ),
+              Gap(10),
+              Text(
+                "Make sure you give a start on github project!",
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
           const Gap(50),
           const Text(
             "Follow me",
@@ -188,6 +323,7 @@ class _HomeState extends State<Home> {
               ),
             ],
           ),
+          const Gap(15),
         ],
       ),
     );
