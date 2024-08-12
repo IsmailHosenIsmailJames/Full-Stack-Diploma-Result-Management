@@ -399,6 +399,9 @@ class _HomeState extends State<Home> {
                         MaterialPageRoute(
                           builder: (context) => IntituteResultUi(
                             result: jsonDecode(response.body),
+                            providan: regulation,
+                            heldOn: heldOn,
+                            semester: semester,
                           ),
                         ),
                       );
@@ -493,7 +496,7 @@ class _HomeState extends State<Home> {
                           Text(
                             "Institution Result",
                             style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 18,
                               color: isInstitution
                                   ? Colors.grey
                                   : Colors.blue.shade900,
@@ -502,7 +505,7 @@ class _HomeState extends State<Home> {
                           ),
                           if (!isInstitution)
                             SizedBox(
-                              width: 200,
+                              width: 150,
                               child: Divider(
                                 height: 2,
                                 color: Colors.blue.shade900,
@@ -525,7 +528,7 @@ class _HomeState extends State<Home> {
                           Text(
                             "Institution Result",
                             style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 18,
                               color: isInstitution
                                   ? Colors.blue.shade900
                                   : Colors.grey,
@@ -534,7 +537,7 @@ class _HomeState extends State<Home> {
                           ),
                           if (isInstitution)
                             SizedBox(
-                              width: 200,
+                              width: 150,
                               child: Divider(
                                 height: 2,
                                 color: Colors.blue.shade900,
@@ -548,8 +551,14 @@ class _HomeState extends State<Home> {
                 Padding(
                     padding: const EdgeInsets.all(20),
                     child: isListOfFilesLoading
-                        ? const Center(
-                            child: CircularProgressIndicator(),
+                        ? const Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              CircularProgressIndicator(),
+                              Gap(10),
+                              Text("it take a while"),
+                            ],
                           )
                         : formWidget),
                 const Gap(50),

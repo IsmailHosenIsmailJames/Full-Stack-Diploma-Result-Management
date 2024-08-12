@@ -1,9 +1,19 @@
+import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'dart:html';
 
 class IntituteResultUi extends StatelessWidget {
   final Map result;
-  const IntituteResultUi({super.key, required this.result});
+  final String semester;
+  final String heldOn;
+  final String providan;
+  const IntituteResultUi(
+      {super.key,
+      required this.result,
+      required this.semester,
+      required this.heldOn,
+      required this.providan});
 
   @override
   Widget build(BuildContext context) {
@@ -11,13 +21,41 @@ class IntituteResultUi extends StatelessWidget {
     List allKeyOfRoll = mainResult.keys.toList();
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Institution Result"),
+        title: const SelectableText("Institution Result"),
         actions: [
           TextButton(
-            onPressed: () {},
+            onPressed: () async {
+              List<List<String>> csvData = [
+                ["NO", "Roll", "Result (CGPA)", "Failed"]
+              ];
+              for (int index = 0; index < mainResult.length; index++) {
+                List<String> row = [];
+                row.add(allKeyOfRoll[index].toString());
+                row.add(allKeyOfRoll[index]);
+                row.add((mainResult[allKeyOfRoll[index]]['result'] ?? "")
+                    .toString());
+
+                row.add((mainResult[allKeyOfRoll[index]]['failed'] ?? "")
+                    .toString()
+                    .replaceAll('[', '')
+                    .replaceAll(']', ''));
+                csvData.add(row);
+              }
+              String csv = const ListToCsvConverter().convert(csvData);
+              final blob = Blob([csv], 'text/plain', 'native');
+              final url = Url.createObjectUrlFromBlob(blob);
+              AnchorElement(href: url)
+                ..setAttribute("download",
+                    "${result['name'].toString()}_providan-${providan}_held on-${heldOn}_semester-$semester.csv")
+                ..click();
+              Url.revokeObjectUrl(url);
+            },
             child: const Row(
               children: [
-                Text("Download CSV"),
+                SelectableText(
+                  "Download CSV",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
                 Gap(5),
                 Icon(Icons.download),
               ],
@@ -28,7 +66,7 @@ class IntituteResultUi extends StatelessWidget {
       body: Center(
         child: Column(
           children: [
-            Text(
+            SelectableText(
               result['name'].toString(),
               style: const TextStyle(
                 fontSize: 28,
@@ -40,7 +78,7 @@ class IntituteResultUi extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Text(
+                SelectableText(
                   "Pass: ${result['passed']}",
                   style: TextStyle(
                     fontSize: 24,
@@ -49,7 +87,7 @@ class IntituteResultUi extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(),
-                Text(
+                SelectableText(
                   "Refeared: ${result['refeared']}",
                   style: TextStyle(
                     fontSize: 24,
@@ -78,7 +116,7 @@ class IntituteResultUi extends StatelessWidget {
                             SizedBox(
                               width: 50,
                               child: Center(
-                                child: Text(
+                                child: SelectableText(
                                   "NO",
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
@@ -91,7 +129,7 @@ class IntituteResultUi extends StatelessWidget {
                             SizedBox(
                               width: 100,
                               child: Center(
-                                child: Text(
+                                child: SelectableText(
                                   "Roll",
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
@@ -104,7 +142,7 @@ class IntituteResultUi extends StatelessWidget {
                             SizedBox(
                               width: 100,
                               child: Center(
-                                child: Text(
+                                child: SelectableText(
                                   "Result (CGPA)",
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
@@ -116,7 +154,7 @@ class IntituteResultUi extends StatelessWidget {
                             ),
                             Expanded(
                               child: Center(
-                                child: Text(
+                                child: SelectableText(
                                   "Failed",
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
@@ -149,7 +187,7 @@ class IntituteResultUi extends StatelessWidget {
                           SizedBox(
                             width: 50,
                             child: Center(
-                              child: Text(
+                              child: SelectableText(
                                 index.toString(),
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w500,
@@ -163,7 +201,7 @@ class IntituteResultUi extends StatelessWidget {
                           SizedBox(
                             width: 100,
                             child: Center(
-                              child: Text(
+                              child: SelectableText(
                                 allKeyOfRoll[index - 1],
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w500,
@@ -177,7 +215,7 @@ class IntituteResultUi extends StatelessWidget {
                           SizedBox(
                             width: 100,
                             child: Center(
-                              child: Text(
+                              child: SelectableText(
                                 mainResult[allKeyOfRoll[index - 1]]['result'] ??
                                     "",
                                 style: const TextStyle(
@@ -190,7 +228,7 @@ class IntituteResultUi extends StatelessWidget {
                           ),
                           Expanded(
                             child: Center(
-                              child: Text(
+                              child: SelectableText(
                                 (mainResult[allKeyOfRoll[index - 1]]
                                             ['failed'] ??
                                         "")
